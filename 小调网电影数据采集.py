@@ -2,6 +2,7 @@ import requests
 from lxml import etree
 import re
 
+a = 0
 # 获取所有页面
 url = "https://www.dy2018.com/html/gndy/dyzz/index.html"
 content = requests.get(url).text
@@ -17,6 +18,7 @@ for page in pages:
     movie_titles = root.xpath("//b/a/@title")  # 获取所有电影标题
     movie_hrefs = root.xpath("//b/a/@href")  # 获取所有电影详情页地址
     for movie_title, movie_href in zip(movie_titles, movie_hrefs):
+
         movie_href = "https://www.dy2018.com" + movie_href
         # 标题只保留尖括号里面的
         pattern = re.compile(r"《(.*?)》")  # 正则表达式
@@ -27,12 +29,16 @@ for page in pages:
         if content:
             root = etree.HTML(content)
             download_url = root.xpath("//td[@bgcolor='#fdfddf']/a/text()")[0]  # 有多个下载地址,取第一个
-            print(movie_title, download_url)
+            a = a + 1
+            print(a, movie_title, download_url)
+
+            f = open("movie.csv", "a+", encoding="utf-8")
+            f.write(f"{a},{movie_title},{download_url}\n")
 
             # 文件存储代码
-            f = open("F:/movie.txt", 'a+')
-            f.write(movie_title[0])
-            f.write(':')
-            f.write(download_url)
-            f.write('\n')
-            f.close()
+            # f = open("F:/movie.txt", 'a+')
+            # f.write(movie_title[0])
+            # f.write(':')
+            # f.write(download_url)
+            # f.write('\n')
+            # f.close()
